@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/google/go-github/github"
@@ -19,7 +20,6 @@ func isFollowing(following []*github.User, user string) bool {
 	for _, u := range following {
 
 		if *u.HTMLURL == user {
-			// log.Println("*u.HTMLURL", *u.HTMLURL)
 			return true
 		}
 	}
@@ -27,8 +27,13 @@ func isFollowing(following []*github.User, user string) bool {
 }
 
 func main() {
+
+	gitHubToken := os.Getenv("GITHUB_TOKEN")
+	gitHubRss := os.Getenv("GITHUB_RSS")
+	gitHubUserName := os.Getenv("GITHUB_USERNAME")
+
 	client := http.Client{}
-	request, err := http.NewRequest("GET", "https://github.com/esin.private.atom?token=AAARBB3Y4R2GCVJMTMHFUIV5TW3ZU", nil)
+	request, err := http.NewRequest("GET", gitHubRss, nil)
 
 	if err != nil {
 		log.Panicln(err)
@@ -46,13 +51,13 @@ func main() {
 
 	ctx := context.Background()
 	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: "dcbd38866b051566559e13f577f94502cd00272b"},
+		&oauth2.Token{AccessToken: gitHubToken},
 	)
 	tc := oauth2.NewClient(ctx, ts)
 
 	ghClient := github.NewClient(tc)
 
-	currentUser, _, err := ghClient.Users.Get(ctx, "esin")
+	currentUser, _, err := ghClient.Users.Get(ctx, gitHubUserName)
 	if err != nil {
 		log.Panicln(err)
 	}
@@ -78,7 +83,6 @@ func main() {
 	followCount := 0
 	for _, f := range feed.Items {
 		if strings.Contains(f.GUID, "FollowEvent") {
-			// log.Println("Tadam: ", f.Link)
 			if !isFollowing(allFollowing, f.Link) {
 				s := strings.Split(f.Link, "github.com/")
 				log.Println("Gonna follow:", s[1])
