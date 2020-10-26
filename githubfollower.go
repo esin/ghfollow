@@ -29,8 +29,17 @@ func isFollowing(following []*github.User, user string) bool {
 func main() {
 
 	gitHubToken := os.Getenv("GITHUB_TOKEN")
+	if gitHubToken == "" {
+		log.Panicln("Env variable GITHUB_TOKEN not found")
+	}
 	gitHubRss := os.Getenv("GITHUB_RSS")
+	if gitHubRss == "" {
+		log.Panicln("Env variable GITHUB_RSS not found")
+	}
 	gitHubUserName := os.Getenv("GITHUB_USERNAME")
+	if gitHubUserName == "" {
+		log.Panicln("Env variable GITHUB_USERNAME not found")
+	}
 
 	client := http.Client{}
 	request, err := http.NewRequest("GET", gitHubRss, nil)
