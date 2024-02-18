@@ -1,0 +1,15 @@
+labels:
+  role: docker-build
+
+steps:
+  docker-build:
+    image: woodpeckerci/plugin-docker-buildx
+    secrets: [docker_username, docker_password]
+    settings:
+      repo: es1n/ghfollow
+      dockerfile: Dockerfile
+      platforms: linux/amd64
+      tags_file: .tags
+    when:
+      branch: ${CI_REPO_DEFAULT_BRANCH}
+      event: push

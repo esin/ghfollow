@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/google/go-github/github"
 	"github.com/mmcdole/gofeed"
@@ -41,6 +42,8 @@ func main() {
 		log.Panicln("Env variable GITHUB_USERNAME not found")
 	}
 
+	log.Println("Downloading RSS feed...")
+
 	client := http.Client{}
 	request, err := http.NewRequest("GET", gitHubRss, nil)
 
@@ -52,6 +55,8 @@ func main() {
 	if err != nil {
 		log.Panicln(err)
 	}
+
+	log.Println("Downloading RSS feed...done")
 
 	feed, err := gofeed.NewParser().Parse(resp.Body)
 	if err != nil {
@@ -75,6 +80,9 @@ func main() {
 
 	followingsPerPage := 100
 
+	log.Printf("Following count: %d", *currentUser.Following)
+	log.Println("Finding all following events...")
+
 	for i := 0; i < (*currentUser.Following/followingsPerPage)+1; i++ {
 
 		following, _, err := ghClient.Users.ListFollowing(ctx, "", &github.ListOptions{PerPage: followingsPerPage, Page: i})
@@ -85,10 +93,12 @@ func main() {
 		for _, fl := range following {
 			allFollowing = append(allFollowing, fl)
 		}
+		time.Sleep(300 * time.Millisecond)
 	}
 
-	log.Printf("Following count: %d", *currentUser.Following)
+	log.Println("Finding all following events...done")
 
+	log.Println("Try to follow new users")
 	followCount := 0
 	for _, f := range feed.Items {
 		if strings.Contains(f.GUID, "FollowEvent") {
@@ -97,6 +107,7 @@ func main() {
 				log.Println("Gonna follow:", s[1])
 				_, err := ghClient.Users.Follow(ctx, s[1])
 
+				time.Sleep(500 * time.Millisecond)
 				if err != nil {
 					log.Println(err)
 					continue
