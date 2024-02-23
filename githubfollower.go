@@ -93,28 +93,33 @@ func main() {
 	// Followback mode
 	// Finds follower which are not followed by you and tries to follow them
 	if os.Getenv("FOLLOWBACK") == "1" {
+		followers := []*github.User{}
 		log.Println("Finding all your followers and try to follow then")
 		for i := 0; i < (*currentUser.Followers/followingsPerPage)+1; i++ {
-
-			followers, _, err := ghClient.Users.ListFollowers(ctx, "", &github.ListOptions{PerPage: followingsPerPage, Page: i})
+			followers, _, err = ghClient.Users.ListFollowers(ctx, "", &github.ListOptions{PerPage: followingsPerPage, Page: i})
 			if err != nil {
 				log.Println(err)
 			}
+		}
 
-			for _, fl := range followers {
-				if _, ok := allFollowing_q[*fl.Login]; !ok {
-					log.Println("Gonna follow:", *fl.Login)
+		for _, fl := range followers {
+			if _, ok := allFollowing_q[*fl.Login]; !ok {
+				log.Println("Gonna follow:", *fl.Login)
 
-					_, err := ghClient.Users.Follow(ctx, *fl.Login)
-					if err != nil {
-						log.Println(err)
-						continue
-					}
-					followCount++
-					time.Sleep(3 * time.Second)
+				_, err := ghClient.Users.Follow(ctx, *fl.Login)
+				if err != nil {
+					log.Println(err)
+					continue
 				}
+				followCount++
+				time.Sleep(3 * time.Second)
+			}
+			// No more than 100 for one time
+			if followCount == 100 {
+				break
 			}
 		}
+
 		showFollowCount(followCount)
 		os.Exit(0)
 	}
