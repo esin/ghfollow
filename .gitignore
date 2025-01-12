@@ -1,0 +1,12 @@
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+go.work
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
