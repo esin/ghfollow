@@ -1,4 +1,4 @@
-FROM golang:1.21-alpine
+FROM golang:1.24-alpine
 
 WORKDIR /src
 
@@ -7,7 +7,7 @@ COPY go.mod .
 
 RUN go mod tidy && CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -o githubfollower
 
-FROM alpine:3.19
+FROM alpine:3.21
 
 COPY --from=0 /src/githubfollower /app/githubfollower
 
