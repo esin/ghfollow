@@ -9,7 +9,7 @@ on:
 
 jobs:
   docker-build:
-    runs-on: ubuntu-latest
+    runs-on: docker-build
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
