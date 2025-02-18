@@ -38,5 +38,7 @@ jobs:
           context: .
           file: ./Dockerfile
           platforms: linux/amd64
-          tags: es1n/ghfollow:${{ steps.new-tag.outputs.tag }}
+          tags: |
+            es1n/ghfollow:${{ steps.new-tag.outputs.tag }}
+            es1n/ghfollow:latest
           push: true
