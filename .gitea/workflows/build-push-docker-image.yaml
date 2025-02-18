@@ -38,11 +38,5 @@ jobs:
           context: .
           file: ./Dockerfile
           platforms: linux/amd64
-          tags: ${{ steps.new-tag.outputs.tag }}
+          tags: es1n/ghfollow:${{ steps.new-tag.outputs.tag }}
           push: true
-
-      # - name: Read tags from file
-      #   id: tags
-      #   run: |
-      #     TAGS=$(cat .tags)
-      #     echo "::set-output name=tags::$TAGS"
