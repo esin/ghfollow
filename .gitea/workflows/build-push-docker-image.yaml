@@ -3,7 +3,7 @@ name: Build docker image
 on:
   push:
     branches:
-      - ${CI_REPO_DEFAULT_BRANCH}
+      - main
 
   workflow_dispatch:
 
