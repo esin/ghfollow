@@ -23,13 +23,20 @@ jobs:
           username: ${{ secrets.HUB_DOCKER_USERNAME }}
           password: ${{ secrets.HUB_DOCKER_PASSWORD }}
 
+      - name: Generate date-based tag
+        id: new-tag
+        run: |
+          NEWTAG=$(date +'date +%y%m%d%H%M')
+          echo "Generated tag: $NEWTAG"
+          echo "::set-output name=tag::$NEWTAG"
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
           context: .
           file: ./Dockerfile
           platforms: linux/amd64
-          tags: ${{ steps.tags.outputs.tags }}
+          tags: ${{ steps.new-tag.outputs.tag }}
           push: true
 
       # - name: Read tags from file
