@@ -10,8 +10,10 @@ on:
 jobs:
   docker-build:
     runs-on: docker-build
+    container:
+      image: catthehacker/ubuntu:act-24.04
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
