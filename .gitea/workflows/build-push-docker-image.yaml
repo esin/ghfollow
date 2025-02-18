@@ -28,7 +28,7 @@ jobs:
       - name: Generate date-based tag
         id: new-tag
         run: |
-          NEWTAG=$(date +'date +%y%m%d%H%M')
+          NEWTAG=$(date +%y%m%d%H%M)
           echo "Generated tag: $NEWTAG"
           echo "::set-output name=tag::$NEWTAG"
 
